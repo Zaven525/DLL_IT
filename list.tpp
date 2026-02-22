@@ -2,43 +2,133 @@
 #include "list.hpp"
 
 
+
+
 //Member functions
+template <typename T>
+List<T>::List() : size{0}
+{
+    sentinel = new Node<T>{};
+    sentinel->next = sentinel->prev = sentinel;
+}
 
 template <typename T>
-List<T>::iterator List<T>::insert(const iterator pos, const T& value)
+List<T>::List(size_t count, const T& _data) : List()
 {
-    Node* n = new Node<T>{value};
-    Node* curr = pos.curr;
-    curr->prev->next = n;
-    n->prev = curr->prev;
-    curr->prev = n;
+    insert(end(), count, _data);
+}
+
+template <typename T>
+List<T>::List(const List& other) : List()
+{
+    Node* other_curr = other.sentinel->next;
+
+    while(other_curr != other.sentinel)
+    {
+        insert(end(), other_curr->data);
+        other_curr = other_curr->next;
+    }
+}
+
+template <typename T>
+List<T>::List(List&& other) noexcept : List<T>{}
+{
+    std::swap(sentinel, other.sentinel);
+    std::swap(size, other.size);
+}
+
+template <typename T>
+List<T>& List<T>::operator=(const List& other)
+{
+    if (this == &other) return *this;
+    Node* curr = sentinel->next;
+    while(curr != sentinel)
+    {
+        erase(end());
+        curr = curr->next;
+    }
+    curr = other.sentinel->next;
+    while(curr != other.sentinel)
+    {
+        insert(end(), curr->data);
+        curr = curr->next;
+    }
+}
+
+
+// Modifiers
+template <typename T>
+typename List<T>::iterator
+List<T>::insert(iterator pos, const T& value)
+{
+    Node<T>* n = new Node<T>{value};
+    Node<T>* curr = pos.curr;
+
     n->next = curr;
-    size++;
+    n->prev = curr->prev;
+    curr->prev->next = n;
+    curr->prev = n;
+    
+    ++size;
     return iterator(n);
 }
 
 template <typename T>
-List<T>::iterator List<T>::insert(const iterator pos, T&& value)
+typename List<T>::iterator
+List<T>::insert(iterator pos, T&& value)
 {
-    Node* n = new Node<T>{std::move(value)};
-    Node* curr = pos.curr;
-    curr->prev->next = n;
-    n->prev = curr->prev;
-    curr->prev = n;
+    Node<T>* n = new Node<T>{std::move(value)};
+    Node<T>* curr = pos.curr;
+    
     n->next = curr;
-    size++;
+    n->prev = curr->prev;
+    curr->prev->next = n;
+    curr->prev = n;
+    
+    ++size;
     return iterator(n);
 }
 
 template <typename T>
-List<T>::iterator List<T>::insert(const iterator pos, const size_t count, const T& value)
+typename List<T>::iterator
+List<T>::insert(const iterator pos, const size_t count, const T& value)
 {
-    for (size_t i{}; i < count-1; ++i)
+    if (count == 0) return pos;
+    iterator tmp = insert(pos, value);
+
+    for (size_t i{1}; i < count; ++i)
     {
         insert(pos, value);
     }
-    return insert(pos, value);
+
+    return tmp;
 }
+
+template <typename T>
+typename List<T>::iterator
+List<T>::erase(iterator pos)
+{
+    if (pos == end()) return end();
+    
+    Node<T>* prev = pos.curr->prev;
+    Node<T>* next = pos.curr->next;
+    
+    prev->next = pos.curr->next;
+    next->prev = pos.curr->prev;
+    
+    --size;
+    delete pos.curr;
+    return iterator(next);
+}
+
+template <typename T>
+typename List<T>::iterator
+List<T>::erase(iterator first, iterator last)
+{
+    while(first != last) first = erase(first);
+    return last;
+}
+
 // template <typename T>
 // List<T>::List(const List& other) : _head{nullptr}, _tail{nullptr}
 // {

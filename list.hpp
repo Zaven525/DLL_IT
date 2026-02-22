@@ -21,7 +21,7 @@ struct Node
     Node<T>* prev;
     Node<T>* next;
     
-    Node(T _data = T()) : data(_data), next(*this), prev(*this) {}
+    Node(T _data = T()) : data{_data}, next{nullptr}, prev{nullptr} {}
     Node(Node<T>* _next, T _data = T())  : data(_data), prev(nullptr), next(_next) {}
     Node(Node<T>* _prev, Node<T>* _next, T _data = T()) : data(_data), prev(_prev), next(_next) {}
     Node(const Node& other) : data{other.data}, prev{nullptr}, next{nullptr} {}
@@ -48,9 +48,9 @@ class List
             bool operator==(const iterator& other) const { return curr == other.curr; }
             bool operator!=(const iterator& other) const { return curr != other.curr; }
             iterator& operator++() { curr = curr->next; return *this; }
-            iterator opeartor++(int) { iterator tmp = *this; curr = curr->next; return tmp; }
+            iterator operator++(int) { iterator tmp = *this; curr = curr->next; return tmp; }
             iterator& operator--() { curr = curr->prev; return *this; }
-            iterator opeartor--(int) { iterator tmp = *this; curr = curr->prev; return tmp; }
+            iterator operator--(int) { iterator tmp = *this; curr = curr->prev; return tmp; }
             T& operator*() const { return curr->data; }
             T* operator->() const { return &curr->data; }
         };
@@ -59,11 +59,11 @@ class List
         iterator end() const { return iterator(sentinel); }
 
         //// Member functions
-        List() : size{0}, sentinel{} {};
-        //List(size_t count, const T& _data = T());
-        // List(const List& other);
-        // List(List&& other);
-        // List& operator=(const List& other);
+        List();
+        List(size_t count, const T& _data = T());
+        List(const List& other);
+        List(List&& other) noexcept;
+        List& operator=(const List& other);
         // List& operator=(List&& other);
         // ~List();
         // void assign(size_t count, const T& value);
@@ -83,15 +83,15 @@ class List
         iterator insert(const iterator pos, const T& value);
         iterator insert(const iterator pos, T&& value);
         iterator insert(const iterator pos, const size_t count, const T& value );
-        // void erase(size_t pos);
-        // void erase(size_t from, size_t to);
-        // void push_back(const T& data);
-        // void push_back(T&& data);
+        iterator erase(iterator pos);
+        iterator erase(iterator first, iterator last);
+        void push_back(const T& data);
+        void push_back(T&& data);
         // void pop_back();
         // void push_front(const T& data);
         // void push_front(T&& data);
         // void pop_front();
-        // void swap(List<T>& other);
+        void swap(List<T>& other);
 
         // template<typename ... Args>
         // void emplace(size_t pos, Args&&...args);

@@ -2,8 +2,6 @@
 
 int main()
 {
-    List<int> l1{2};
-    
-    l1.emplace(1); 
+    List<int> l1(2, 1);
     return 0;
 }
