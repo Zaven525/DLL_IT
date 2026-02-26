@@ -68,29 +68,29 @@ class List
         // ~List();
         // void assign(size_t count, const T& value);
 
-        // // Element access
-        // T& front() { if (_head) return _head->_data; }
-        // const T& front() const { if (_head) return _head->_data; }
-        // T& back() { if (_tail) return _tail->_data; }
-        // const T& back() const { if (_tail) return _tail->_data; }
+        // Element access
+        T& front() { if (size) return sentinel->next->data; }
+        const T& front() const { if (size) return sentinel->next->data; }
+        T& back() { if (size) return sentinel->prev->data; }
+        const T& back() const { if (size) return sentinel->prev->data; }
         
-        // // Capacity
-        // bool empty() const noexcept { return !_head; }
-        // size_t size() const noexcept;
+        // Capacity
+        bool empty() const noexcept { return size == 0; }
+        size_t size() const noexcept { return size; }
         
         // // Modifiers
-        // void clear();
+        void clear();
         iterator insert(const iterator pos, const T& value);
         iterator insert(const iterator pos, T&& value);
         iterator insert(const iterator pos, const size_t count, const T& value );
         iterator erase(iterator pos);
         iterator erase(iterator first, iterator last);
-        void push_back(const T& data);
-        void push_back(T&& data);
-        // void pop_back();
-        // void push_front(const T& data);
-        // void push_front(T&& data);
-        // void pop_front();
+        void push_back(const T& data) { insert(end(), data); }
+        void push_back(T&& data) { insert(end(), std::move(data)); }
+        void pop_back() { erase(--end()); }
+        void push_front(const T& data) { insert(begin(), data); };
+        void push_front(T&& data) { insert(begin(), std::move(data)); }
+        void pop_front() { erase(begin()); };
         void swap(List<T>& other);
 
         // template<typename ... Args>
@@ -100,7 +100,7 @@ class List
         // void sort();
         // void merge(List<T>& other);
         // void reverse();
-        // void print_list();
+        void print_list();
 };
 
 #include "list.tpp"

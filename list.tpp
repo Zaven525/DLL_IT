@@ -21,7 +21,7 @@ List<T>::List(size_t count, const T& _data) : List()
 template <typename T>
 List<T>::List(const List& other) : List()
 {
-    Node* other_curr = other.sentinel->next;
+    Node<T>* other_curr = other.sentinel->next;
 
     while(other_curr != other.sentinel)
     {
@@ -41,22 +41,28 @@ template <typename T>
 List<T>& List<T>::operator=(const List& other)
 {
     if (this == &other) return *this;
-    Node* curr = sentinel->next;
-    while(curr != sentinel)
-    {
-        erase(end());
-        curr = curr->next;
-    }
+    Node<T>* curr = sentinel->next;
+    
+    clear();
+    
     curr = other.sentinel->next;
     while(curr != other.sentinel)
     {
         insert(end(), curr->data);
         curr = curr->next;
     }
+    
+    return *this;
 }
 
 
 // Modifiers
+template <typename T>
+void List<T>::clear()
+{
+    erase(begin(), end());
+}
+
 template <typename T>
 typename List<T>::iterator
 List<T>::insert(iterator pos, const T& value)
@@ -128,6 +134,7 @@ List<T>::erase(iterator first, iterator last)
     while(first != last) first = erase(first);
     return last;
 }
+
 
 // template <typename T>
 // List<T>::List(const List& other) : _head{nullptr}, _tail{nullptr}
@@ -578,12 +585,12 @@ List<T>::erase(iterator first, iterator last)
 //     }
 // }
 
-// template <typename T>
-// void List<T>::print_list()
-// {
-//     Node<T>* cur = _head;
-//     while (cur) { 
-//         std::cout << cur->_data; 
-//         cur = cur->_next;
-//     }
-// }
+template <typename T>
+void List<T>::print_list()
+{
+    Node<T>* cur = sentinel->next;
+    while (cur != sentinel) { 
+        std::cout << cur->data; 
+        cur = cur->next;
+    }
+}
