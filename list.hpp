@@ -42,9 +42,10 @@ class List
           private:
             Node<T>* curr;
             friend class const_iterator;
+            friend class List; 
+            
           public:
             iterator(Node<T>* _curr) : curr{_curr} {}
-            
             bool operator==(const iterator& other) const { return curr == other.curr; }
             bool operator!=(const iterator& other) const { return curr != other.curr; }
             iterator& operator++() { curr = curr->next; return *this; }
@@ -145,7 +146,7 @@ class List
         
         // Capacity
         bool empty() const noexcept { return size == 0; }
-        size_t size() const noexcept { return size; }
+        size_t Size() const noexcept { return size; }
         
         // // Modifiers
         void clear();
